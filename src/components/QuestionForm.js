@@ -1,36 +1,63 @@
 import React, { useState } from "react";
 
-function QuestionForm(props) {
-  const [formData, setFormData] = useState({
-    prompt: "",
-    answer1: "",
-    answer2: "",
-    answer3: "",
-    answer4: "",
-    correctIndex: 0,
-  });
+function QuestionForm({ addQuestion, question = null, updateQuestion = null }) {
+  const [formData, setFormData] = useState(
+    question || {
+      prompt: "",
+      answer1: "",
+      answer2: "",
+      answer3: "",
+      answer4: "",
+      correctIndex: "0",
+    }
+  );
 
-  function handleChange(event) {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
-  }
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
 
-  function handleSubmit(event) {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(formData);
-  }
+    const newQuestion = {
+      prompt: formData.prompt,
+      answers: [
+        formData.answer1,
+        formData.answer2,
+        formData.answer3,
+        formData.answer4,
+      ],
+      correctIndex: parseInt(formData.correctIndex, 10),
+    };
+
+    if (updateQuestion) {
+      updateQuestion(question.id, newQuestion);
+    } else {
+      addQuestion(newQuestion);
+    }
+
+    setFormData({
+      prompt: "",
+      answer1: "",
+      answer2: "",
+      answer3: "",
+      answer4: "",
+      correctIndex: "0",
+    });
+  };
 
   return (
     <section>
-      <h1>New Question</h1>
+      <h1>{updateQuestion ? "Edit Question" : "New Question"}</h1>
       <form onSubmit={handleSubmit}>
         <label>
           Prompt:
           <input
-            type="text"
             name="prompt"
+            type="text"
             value={formData.prompt}
             onChange={handleChange}
           />
@@ -38,8 +65,8 @@ function QuestionForm(props) {
         <label>
           Answer 1:
           <input
-            type="text"
             name="answer1"
+            type="text"
             value={formData.answer1}
             onChange={handleChange}
           />
@@ -47,8 +74,8 @@ function QuestionForm(props) {
         <label>
           Answer 2:
           <input
-            type="text"
             name="answer2"
+            type="text"
             value={formData.answer2}
             onChange={handleChange}
           />
@@ -56,8 +83,8 @@ function QuestionForm(props) {
         <label>
           Answer 3:
           <input
-            type="text"
             name="answer3"
+            type="text"
             value={formData.answer3}
             onChange={handleChange}
           />
@@ -65,8 +92,8 @@ function QuestionForm(props) {
         <label>
           Answer 4:
           <input
-            type="text"
             name="answer4"
+            type="text"
             value={formData.answer4}
             onChange={handleChange}
           />
@@ -78,13 +105,15 @@ function QuestionForm(props) {
             value={formData.correctIndex}
             onChange={handleChange}
           >
-            <option value="0">{formData.answer1}</option>
-            <option value="1">{formData.answer2}</option>
-            <option value="2">{formData.answer3}</option>
-            <option value="3">{formData.answer4}</option>
+            <option value="0">Answer 1</option>
+            <option value="1">Answer 2</option>
+            <option value="2">Answer 3</option>
+            <option value="3">Answer 4</option>
           </select>
         </label>
-        <button type="submit">Add Question</button>
+        <button type="submit">
+          {updateQuestion ? "Update Question" : "Add Question"}
+        </button>
       </form>
     </section>
   );

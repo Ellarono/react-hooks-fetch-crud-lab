@@ -1,23 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 
-function QuestionItem({ question }) {
-  const { id, prompt, answers, correctIndex } = question;
+function QuestionItem({ question, deleteQuestion, updateQuestion }) {
+  const [answer, setAnswer] = useState(question.answer);
 
-  const options = answers.map((answer, index) => (
-    <option key={index} value={index}>
-      {answer}
-    </option>
-  ));
+  const handleChange = (e) => {
+    setAnswer(e.target.value);
+    updateQuestion(question.id, { ...question, answer: e.target.value });
+  };
 
   return (
     <li>
-      <h4>Question {id}</h4>
-      <h5>Prompt: {prompt}</h5>
-      <label>
-        Correct Answer:
-        <select defaultValue={correctIndex}>{options}</select>
-      </label>
-      <button>Delete Question</button>
+      <p>{question.question}</p>
+      <select value={answer} onChange={handleChange}>
+        {/* Assuming answer options are predefined */}
+        <option value="Answer 1">Answer 1</option>
+        <option value="Answer 2">Answer 2</option>
+        <option value="Answer 3">Answer 3</option>
+      </select>
+      <button onClick={() => deleteQuestion(question.id)}>Delete</button>
     </li>
   );
 }
